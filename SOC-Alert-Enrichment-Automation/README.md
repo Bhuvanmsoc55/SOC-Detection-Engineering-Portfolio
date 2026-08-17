@@ -1,16 +1,28 @@
 # SOC Alert Enrichment & Automation
 
-> Automated SOC alert enrichment and investigation workflow integrating SIEM data, threat intelligence, MITRE ATT&CK mapping, risk scoring, and AI-assisted analysis.
+> Automated SOC alert enrichment and AI-driven incident analysis workflow integrating SIEM data, threat intelligence, payload detection, MITRE ATT&CK mapping, risk scoring, and automated SOC reporting.
 
 ---
 
 ## Project Overview
 
-This project automates the initial enrichment and analysis of security alerts generated from the SIEM.
+This project automates security alert enrichment and AI-driven incident analysis by combining threat intelligence, payload detection, MITRE ATT&CK mapping, risk scoring, and automated SOC reporting.
 
-The workflow takes an alert, extracts relevant security information, enriches it with threat intelligence and contextual data, maps the observed activity to MITRE ATT&CK techniques, evaluates endpoint criticality, calculates a risk score, and generates a structured AI-assisted SOC analysis.
+The workflow receives security alert data, enriches the alert with threat intelligence and contextual information, analyzes the observed payload and attack activity, maps relevant behavior to MITRE ATT&CK techniques, calculates a risk score, and uses Gemini AI to generate a structured incident analysis.
 
-The final analysis is automatically delivered to Google Chat for SOC analyst review.
+The final analysis is automatically processed and delivered to Google Chat for SOC analyst review.
+
+---
+
+## 🔄 SIEM Data Pipeline
+
+Python was used to retrieve security logs from Wazuh and push the log data into Redis. The logs were then forwarded from Redis directly to OpenSearch for centralized storage, monitoring, and analysis.
+
+### Data Pipeline
+
+**Wazuh → Python → Redis → OpenSearch**
+
+This pipeline provides the underlying security data used for centralized monitoring, analysis, and downstream SOC automation.
 
 ---
 
@@ -22,7 +34,7 @@ The final analysis is automatically delivered to Google Chat for SOC analyst rev
 
 ### Workflow Flow
 
-**Wazuh / OpenSearch → Webhook → URL Decode → Payload Detection → AbuseIPDB → MITRE ATT&CK → Endpoint Criticality → Risk Score → Gemini AI → Markdown Formatter → Google Chat**
+**SIEM IP → VirusTotal / AbuseIPDB / Payload Detection → Merge → MITRE Mapping → Risk Score Engine → LLM / Gemini AI → Merge → Function Node → Google Chat**
 
 ---
 
@@ -30,44 +42,45 @@ The final analysis is automatically delivered to Google Chat for SOC analyst rev
 
 | Component | Purpose |
 |---|---|
-| **SIEM IP** | Receives security alert data from the SIEM and triggers the enrichment workflow |
+| **SIEM IP** | Receives security alert data from the SIEM and triggers the automation workflow |
 | **VirusTotal** | Enriches the source IP with threat intelligence and reputation information |
-| **AbuseIPDB** | Provides additional IP reputation and abuse-confidence context |
-| **Payload Detection** | Analyzes the alert payload and identifies suspicious attack patterns |
-| **Merge** | Combines alert, threat intelligence, and payload analysis results |
+| **AbuseIPDB** | Provides additional source IP reputation and abuse-confidence context |
+| **Payload Detection** | Analyzes alert payload information and identifies suspicious attack patterns |
+| **Merge** | Combines alert data with enrichment and payload analysis results |
 | **MITRE Mapping** | Maps identified attack behavior to relevant MITRE ATT&CK techniques |
-| **Risk Score Engine** | Calculates a risk score using the enriched alert context |
-| **LLM Node** | Uses Gemini AI to analyze the enriched security alert and generate investigation findings |
-| **Gemini AI Model** | Provides the AI model used for automated SOC alert analysis |
-| **Merge** | Combines the generated analysis with the required alert context before reporting |
-| **Function Node** | Processes and formats the analysis into a structured SOC report |
+| **Risk Score Engine** | Calculates a risk score based on the enriched alert context |
+| **LLM Node** | Processes the enriched security alert and generates AI-driven incident analysis |
+| **Gemini AI Model** | Provides the AI model used for automated security alert analysis |
+| **Merge** | Combines the generated analysis with the required alert context for reporting |
+| **Function Node** | Processes and structures the generated analysis into a readable SOC report |
 | **Google Chat Space** | Delivers the final automated SOC analysis to the analyst/team |
 
 ---
 
 ## Security Capabilities
 
-- Automated SOC alert ingestion
-- Threat intelligence enrichment
+- Automated security alert ingestion
+- Automated threat intelligence enrichment
 - Source IP reputation analysis
 - Attack and payload classification
 - MITRE ATT&CK technique mapping
-- Endpoint criticality assessment
 - Risk scoring
-- AI-assisted alert investigation
+- AI-driven incident analysis
 - Automated SOC reporting
 - Security workflow automation
+- Centralized security data processing
+- Centralized delivery of investigation findings
 
 ---
 
 ## Technologies Used
 
 **SIEM:** Wazuh, OpenSearch  
+**Log Ingestion & Processing:** Python, Redis  
 **Automation:** n8n  
-**Threat Intelligence:** AbuseIPDB  
+**Threat Intelligence:** VirusTotal, AbuseIPDB  
 **Detection & Framework:** MITRE ATT&CK  
 **AI:** Gemini AI  
-**Programming:** Python  
 **Integration:** REST APIs  
 **Infrastructure:** Docker  
 **Notification:** Google Chat
@@ -76,44 +89,38 @@ The final analysis is automatically delivered to Google Chat for SOC analyst rev
 
 ## Threat Intelligence Enrichment
 
-The workflow enriches security alerts with external threat intelligence to provide additional context around the source IP involved in the activity.
+The workflow enriches security alerts with external threat intelligence to provide additional context around source IPs involved in suspicious activity.
 
 <p align="center">
   <img src="./screenshots/Virustotal.png" alt="Threat Intelligence Enrichment" width="800">
 </p>
 
-This enrichment helps provide additional context during the initial alert investigation and supports analyst decision-making.
+Threat intelligence enrichment provides additional reputation and contextual information that can support alert investigation and risk assessment.
 
 ---
 
-## 🤖 AI-Assisted SOC Analysis
+## 🤖 AI-Driven Incident Analysis
 
-After the alert is enriched and contextualized, the workflow passes the relevant information to Gemini AI to generate a structured SOC investigation summary.
+Following alert enrichment and contextual analysis, the workflow passes the relevant security information to Gemini AI to generate a structured incident analysis.
 
 <p align="center">
-  <img src="./screenshots/G%20chat.png" alt="AI Assisted SOC Analysis Report" width="800">
+  <img src="./screenshots/G%20chat.png" alt="AI-Driven Incident Analysis Report" width="800">
 </p>
 
-The generated report provides analysts with a structured summary of the observed activity and relevant investigation context.
+The generated analysis provides SOC analysts with a structured view of the observed security activity, attack context, and relevant investigation findings.
 
 ---
 
 ## Security Value
 
-The workflow reduces repetitive manual enrichment tasks during initial SOC alert investigation by automatically combining:
+The workflow reduces repetitive manual enrichment and analysis tasks by automatically combining:
 
-**Alert Data + Threat Intelligence + Attack Context + MITRE ATT&CK + Risk Assessment + AI Analysis**
+**Alert Data + Threat Intelligence + Payload Analysis + MITRE ATT&CK + Risk Assessment + AI-Driven Analysis**
 
-This helps SOC analysts obtain investigation context faster and produce more consistent alert analysis.
+This enables SOC analysts to obtain enriched investigation context faster and receive a consistent, structured analysis of security alerts.
 
 ---
 
 ## Project Focus
 
-**SOC Automation • Detection Engineering • Threat Intelligence • MITRE ATT&CK • Security Data Enrichment • AI-Assisted Investigation**
-
----
-
-### ⚠️ Disclaimer
-
-This project is intended for cybersecurity learning, portfolio demonstration, and SOC automation purposes. No confidential customer data, credentials, or proprietary security information is included.
+**SOC Automation • Detection Engineering • Threat Intelligence • MITRE ATT&CK • Security Data Enrichment • SIEM Engineering • AI-Driven Incident Analysis**
